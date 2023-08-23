@@ -19,6 +19,17 @@ namespace Entities
 
   public static class BuyOrderExtensions
   {
+    public static BuyOrder ToBuyOrder(this BuyOrderRequest buyOrderRequest)
+    {
+      return new BuyOrder()
+      {
+        StockName = buyOrderRequest.StockName,
+        StockSymbol = buyOrderRequest.StockSymbol,
+        DateAndTimeOfOrder = buyOrderRequest?.DateAndTimeOfOrder,
+        Price = buyOrderRequest.Price,
+        Quantity = buyOrderRequest.Quantity,
+      };
+    }
     public static BuyOrderResponse ToBuyOrderResponse(this BuyOrder buyOrder)
     {
       return new BuyOrderResponse()

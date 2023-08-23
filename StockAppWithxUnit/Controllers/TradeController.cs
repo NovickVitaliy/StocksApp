@@ -20,7 +20,18 @@ namespace StockAppWithXUnit.Controllers
     {
         _finnhubService = finnhubService;
         _stockService = stockService;
+      if(tradingOptions != null)
+      {
         _tradingOptions = tradingOptions.Value;
+      }
+      else
+      {
+        _tradingOptions = new TradingOptions()
+        { 
+          DefaultOrderQuantity = 100,
+          Top25PopularStocks = "dasdasdasdasdasdasdasdasdsa"
+        };
+      }
     }
 
     [Route("/")]

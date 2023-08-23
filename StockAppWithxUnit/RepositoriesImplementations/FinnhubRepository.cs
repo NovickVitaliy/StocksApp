@@ -68,7 +68,7 @@ namespace StockAppWithxUnit.RepositoriesImplementations
 
       using (var client = _httpClientFactory.CreateClient())
       {
-        HttpRequestMessage requestMessage = new HttpRequestMessage() 
+        HttpRequestMessage requestMessage = new HttpRequestMessage()
         {
           RequestUri = new Uri($"https://finnhub.io/api/v1/stock/symbol?exchange=US&token={token}"),
           Method = HttpMethod.Get

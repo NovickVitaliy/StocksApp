@@ -24,6 +24,17 @@ namespace Entities
 
   public static class SellOrderExtensions
   {
+    public static SellOrder ToSellOrder(this SellOrderRequest sellOrderRequest)
+    {
+      return new SellOrder()
+      {
+        StockName = sellOrderRequest.StockName,
+        Price = sellOrderRequest.Price,
+        StockSymbol = sellOrderRequest.StockSymbol,
+        Quantity = sellOrderRequest.Quantity,
+        DateAndTimeOfOrder = sellOrderRequest.DateAndTimeOfOrder,
+      };
+    }
     public static SellOrderResponse ToSellOrderResponse(this SellOrder sellOrder)
     {
       return new SellOrderResponse()
