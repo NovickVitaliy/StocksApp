@@ -1,9 +1,13 @@
+using AutoFixture;
 using Entities;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
 using StockAppWithxUnit.Entities;
+using StockAppWithxUnit.RepositoriesContracts;
 using StockAppWithxUnit.ServicesContracts;
 
 namespace ProjectUnitTests
@@ -11,10 +15,18 @@ namespace ProjectUnitTests
   public class StockTradeTests
   {
     private readonly IStockService _stockService;
+    private readonly Fixture _fixture;
+    private readonly Mock<IStocksRepository> _stocksRepositoryMock;
+    private readonly IStocksRepository _stocksRepository;
 
     public StockTradeTests()
     {
-      _stockService = new StockService(new StockMarketDbContext(new DbContextOptions<StockMarketDbContext>()));
+      _fixture = new Fixture();
+
+      _stocksRepositoryMock = new Mock<IStocksRepository>();
+      _stocksRepository = _stocksRepositoryMock.Object;
+
+      _stockService = new StockService(_stocksRepository);
     }
 
     #region CreateBuyOrder
@@ -96,18 +108,22 @@ namespace ProjectUnitTests
     [Fact]
     public async void CreateBuyOrder_OrderCreatedSuccessfully()
     {
-      BuyOrderRequest request = new()
-      {
-        DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-        Price = 1488,
-        Quantity = 1337,
-        StockName = "Apple",
-        StockSymbol = "AAPL"
-      };
+      BuyOrderRequest buyOrderRequest = _fixture.Create<BuyOrderRequest>();
 
-      BuyOrderResponse response = await _stockService.CreateBuyOrder(request);
+      BuyOrder buyOrder = buyOrderRequest.ToBuyOrder();
 
-      Assert.True(response.BuyOrderID != Guid.Empty);
+      BuyOrderResponse buyOrderResponseExpected = buyOrder.ToBuyOrderResponse();
+
+      _stocksRepositoryMock.Setup(item => item.CreateBuyOrder(It.IsAny<BuyOrder>()))
+        .ReturnsAsync(buyOrder);
+
+      var buyOrderResponseActual = await _stockService.CreateBuyOrder(buyOrderRequest);
+
+      buyOrderResponseExpected.BuyOrderID = buyOrderResponseActual.BuyOrderID;
+
+      buyOrderResponseActual.BuyOrderID.Should().NotBe(Guid.Empty);
+
+      buyOrderResponseActual.Should().Be(buyOrderResponseExpected);
     }
 
     #endregion
@@ -191,18 +207,30 @@ namespace ProjectUnitTests
     [Fact]
     public async void CreateSellOrder_OrderCreatedSuccessfully()
     {
-      SellOrderRequest request = new()
+      SellOrderRequest sellOrderRequest = new()
       {
         DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
         Price = 1488,
         Quantity = 1337,
         StockName = "Apple",
-        StockSymbol = "AAPL"
+        StockSymbol = "AAPL",
       };
 
-      SellOrderResponse response = await _stockService.CreateSellOrder(request);
+      var sellOrder = sellOrderRequest.ToSellOrder();
 
-      Assert.True(response.SellOrderId != Guid.Empty);
+      var sellOrderResponseExpected = sellOrder.ToSellOrderResponse();
+
+      _stocksRepositoryMock.Setup(item => item.CreateSellOrder(It.IsAny<SellOrder>()))
+        .ReturnsAsync(sellOrder);
+
+      var sellOrderResponseActual = await _stockService.CreateSellOrder(sellOrderRequest);
+
+      sellOrderResponseExpected.SellOrderId = sellOrderResponseActual.SellOrderId;
+
+      sellOrderResponseActual.Should().Be(sellOrderResponseExpected);
+
+      sellOrderResponseActual.SellOrderId.Should().NotBe(Guid.Empty);
+
     }
 
     #endregion
@@ -212,62 +240,36 @@ namespace ProjectUnitTests
     [Fact]
     public async void GetAllBuyOrders_DefaultEmptyList()
     {
-      List<BuyOrderResponse> listOfBuyOrderResponse = await _stockService.GetBuyOrders();
+      List<BuyOrder> listBuyOrders = new List<BuyOrder>();
 
-      Assert.Empty(listOfBuyOrderResponse);
+
+      _stocksRepositoryMock.Setup(item => item.GetBuyOrders())
+        .ReturnsAsync(listBuyOrders);
+
+
+      List<BuyOrderResponse> listOfBuyOrderResponseActual = await _stockService.GetBuyOrders();
+
+      listOfBuyOrderResponseActual.Should().BeEmpty();
     }
 
     [Fact]
     public async void GetAllBuyOrders_CorrectWorkOfMethod()
     {
-      BuyOrderRequest buyOrderRequest1 = new()
+      List<BuyOrder> buyOrders = new List<BuyOrder>()
       {
-        DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-        Price = 1488,
-        Quantity = 54,
-        StockName = "Apple",
-        StockSymbol = "AAPL"
+        _fixture.Create<BuyOrder>(),
+        _fixture.Create<BuyOrder>(),
+        _fixture.Create<BuyOrder>(),
       };
 
-      BuyOrderRequest buyOrderRequest2 = new()
-      {
-        DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-        Price = 1567,
-        Quantity = 15,
-        StockName = "Apple",
-        StockSymbol = "AAPL"
-      };
+      _stocksRepositoryMock.Setup(item => item.GetBuyOrders())
+        .ReturnsAsync(buyOrders);
 
-      BuyOrderRequest buyOrderRequest3 = new()
-      {
-        DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-        Price = 4124,
-        Quantity = 1412,
-        StockName = "Apple",
-        StockSymbol = "APPL"
-      };
+      var buyOrdersListExpected = buyOrders.Select(item => item.ToBuyOrderResponse()).ToList();  
+     
+      var buyOrdersListActual = await _stockService.GetBuyOrders();
 
-      List<BuyOrderRequest> buyOrderRequests = new List<BuyOrderRequest>
-      {
-        buyOrderRequest1,
-        buyOrderRequest2,
-        buyOrderRequest3
-      };
-
-
-      List<BuyOrderResponse> listOfBuyOrderResponsesFromAdd = new List<BuyOrderResponse>();
-
-      foreach (var buyOrderRequest in buyOrderRequests)
-      {
-        listOfBuyOrderResponsesFromAdd.Add(await _stockService.CreateBuyOrder(buyOrderRequest));
-      }
-
-      var listOfBuyOrderResponseFromGet = await _stockService.GetBuyOrders();
-
-      foreach (var buyOrderResponse in listOfBuyOrderResponseFromGet)
-      {
-        Assert.Contains(buyOrderResponse, listOfBuyOrderResponsesFromAdd);
-      }
+      buyOrdersListActual.Should().BeEquivalentTo(buyOrdersListExpected);
     }
 
     #endregion
@@ -277,56 +279,34 @@ namespace ProjectUnitTests
     [Fact]
     public async void GetSellOrders_DefaultEmptyList()
     {
-      List<SellOrderResponse> listOfSellOrders = await _stockService.GetSellOrders();
+      List<SellOrder> sellOrders = new List<SellOrder>();
 
-      Assert.Empty(listOfSellOrders);
+      _stocksRepositoryMock.Setup(item => item.GetSellOrders())
+        .ReturnsAsync(sellOrders);
+
+      var actualList = await _stockService.GetSellOrders();
+
+      actualList.Should().BeEmpty();
     }
 
     [Fact]
     public async void GetSellOrders_CorrectWorkOfMethod()
     {
-      List<SellOrderRequest> listOfSellOrderRequests = new List<SellOrderRequest>()
+      List<SellOrder> sellOrders = new List<SellOrder>()
       {
-        new SellOrderRequest()
-        {
-          DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-          Price = 1442,
-          Quantity = 312,
-          StockName = "Apple",
-          StockSymbol = "AAPL"
-        },        
-        new SellOrderRequest()
-        {
-          DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-          Price = 1442,
-          Quantity = 312,
-          StockName = "Apple",
-          StockSymbol = "AAPL"
-        },        
-        new SellOrderRequest()
-        {
-          DateAndTimeOfOrder = DateTime.Parse("2005-04-25"),
-          Price = 1442,
-          Quantity = 312,
-          StockName = "Apple",
-          StockSymbol = "AAPL"
-        },
+        _fixture.Create<SellOrder>(),
+        _fixture.Create<SellOrder>(),
+        _fixture.Create<SellOrder>()
       };
 
-      List<SellOrderResponse> listOfSellOrderResponsesFromAdd = new List<SellOrderResponse>();
+      var expectedList = sellOrders.Select(item => item.ToSellOrderResponse()).ToList();
 
-      foreach (var sellOrderRequest in listOfSellOrderRequests)
-      {
-        listOfSellOrderResponsesFromAdd.Add( await _stockService.CreateSellOrder(sellOrderRequest));
-      }
+      _stocksRepositoryMock.Setup(item => item.GetSellOrders())
+        .ReturnsAsync(sellOrders);
 
-      List<SellOrderResponse> listOfSellOrderResponseFromGet = await _stockService.GetSellOrders();
+      var actualList = await _stockService.GetSellOrders();
 
-      foreach (var sellOrderResponse in listOfSellOrderResponseFromGet)
-      {
-        Assert.Contains(sellOrderResponse, listOfSellOrderResponsesFromAdd);
-      }
-
+      actualList.Should().BeEquivalentTo(expectedList);
     }
     #endregion
   }
