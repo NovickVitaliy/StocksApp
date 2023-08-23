@@ -1,0 +1,263 @@
+﻿body {
+  background-color: #F1F0E8;
+  font-family: 'Caveat', cursive;
+  font-family: 'Lexend', sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Caveat', cursive;
+  font-family: 'Lexend', sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+
+  .logo > i {
+    font-size: 30px;
+    margin-right: 5px;
+  }
+
+.search-setting-login-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+  .search-setting-login-buttons * {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 20px;
+  }
+
+.search-button {
+  border: none;
+  border-style: none;
+  background-color: cornflowerblue;
+  padding: 7px 12px 7px 12px;
+  border-radius: 10px;
+  color: white;
+}
+
+.fa-gear {
+  font-size: 30px;
+}
+
+.search-input {
+  font-size: 30px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+
+.page-list > li {
+  display: inline-block;
+  margin: 10px;
+  font-size: 20px;
+}
+
+.page-list a:link {
+  text-decoration: none;
+  font-family: 'Caveat', cursive;
+  font-family: 'Lexend', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  color: #5A96E3;
+}
+
+.page-list a:visited {
+  color: #5a96e3;
+}
+
+.active {
+  border-bottom: 2px solid blue;
+}
+
+.stock-section {
+  padding: 10px 0 10px 0;
+  display: flex;
+  background-color: #D8D9DA;
+  margin: 5px 10px 5px 10px;
+  border: 2px solid #9E9FA5;
+  border-radius: 10px;
+}
+
+  .stock-section h1 {
+    padding-left: 30px;
+    font-size: 50px;
+    font-family: 'Caveat', cursive;
+    font-family: 'Lexend', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    color: #5a96e3;
+  }
+
+  .stock-section h2 {
+    padding-left: 30px;
+    font-size: 70px;
+    font-family: 'Caveat', cursive;
+    font-family: 'Lexend', sans-serif;
+    font-family: 'Roboto', sans-serif;
+  }
+
+.stock-info {
+  flex: 2;
+}
+
+.order-section {
+  padding-left: 100px;
+  padding-top: 30px;
+  border-left: 1px solid #9E9FA5;
+  flex: 1;
+}
+
+  .order-section h3 {
+    color: #9E9FA5;
+  }
+
+  .order-section h4 {
+    font-weight: normal;
+  }
+
+
+.quantity-selector {
+  width: 60px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 20px;
+  border-style: none;
+  border: 1px solid #9e9fa5;
+  outline: none;
+}
+
+.quantity-selector {
+  box-shadow: 0px 0px 2px 2px lightskyblue;
+}
+
+.sell-buy-button {
+  display: flex;
+  margin-top: 30px;
+  width: 35%;
+  justify-content: space-between;
+}
+
+  .sell-buy-button button {
+    width: 90px;
+    border-radius: 10px;
+    border-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border: 2px solid #9e9fa5;
+  }
+
+  .sell-buy-button h3 {
+    color: white;
+  }
+
+  .sell-buy-button i {
+    font-size: 35px;
+  }
+
+.buy-button {
+  background-color: green;
+}
+
+.sell-button {
+  background-color: red;
+}
+
+.main-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+  .main-section p {
+    font-size: larger;
+  }
+
+.buy-orders-section {
+  flex: 1;
+  border-radius: 5px;
+  border: 2px solid #9e9fa5;
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.sell-orders-section {
+  flex: 1;
+  border-radius: 5px;
+  border: 2px solid #9e9fa5;
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.buy-order-box {
+  border-bottom: 2px solid grey;
+  padding-left: 25px;
+  margin: 15px;
+}
+
+.sell-order-box {
+  border-bottom: 2px solid grey;
+  padding-left: 25px;
+  margin: 15px;
+}
+
+.order-header {
+  padding-left: 15px;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+  .table th {
+    width: 20%;
+    background-color: lightgreen;
+    border: 1px solid black;
+  }
+
+  .table td {
+    text-align: center;
+    border: 1px solid black;
+    padding: 5px;
+  }
+
+  .main-content {
+    display:flex;
+  }
+
+.all-stocks {
+  border: 2px solid #9e9fa5;
+  border-radius:5px;
+  display: flex;
+  flex-direction: column;
+  flex: 0.75;
+}
+
+  .stock-header {
+    display:flex;
+    justify-content:space-between;
+    padding:5px;
+  }
+
+  .chosen-stock {
+    display:flex;
+    flex:1;
+  }
+
+  .stock {
+    width:100%;
+  }

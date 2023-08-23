@@ -1,0 +1,43 @@
+﻿@{
+  Layout = null;
+}
+@model Orders
+
+<link rel="stylesheet" href="@("http://" + Context.Request.Host + "/Stylesheet.css")"/>
+<h1>Orders</h1>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Date and Time</th>
+    <th>Stock</th>
+    <th>Order Type</th>
+    <th>Quantity</th>
+    <th>Price</th>
+    <th>Trade Amount</th>
+  </tr>
+  </thead>
+  <tbody>
+  @foreach (var sellOrder in Model.SellOrders)
+  {
+    <tr>
+      <td>@sellOrder.DateAndTimeOfOrder</td>
+      <td>@(sellOrder.StockName)(@sellOrder.StockSymbol)</td>
+      <td>SellOrder</td>
+      <td>@sellOrder.Quantity</td>
+      <td>@sellOrder.Price</td>
+      <td>@sellOrder.TradeAmount</td>
+    </tr>
+  }
+  @foreach (var buyOrder in Model.BuyOrders)
+  {
+    <tr>
+        <td>@buyOrder.DateAndTimeOfOrder</td>
+        <td>@(buyOrder.StockName)(@buyOrder.StockSymbol)</td>
+        <td>BuyOrder</td>
+        <td>@buyOrder.Quantity</td>
+        <td>@buyOrder.Price</td>
+        <td>@buyOrder.TradeAmount</td>
+    </tr>
+  }
+  </tbody>
+</table>

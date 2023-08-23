@@ -1,0 +1,28 @@
+﻿@model List<Stock>
+
+<h3>Stocks > Explore</h3>
+<div class="main-content">
+  <div class="all-stocks">
+    <div class="stock-header">
+      <h3 style="color:#9e9fa5; margin-left:5px;">Stocks</h3>
+      <h3 style="margin-right:5px;"><a>Show all stocks</a></h3>
+    </div>
+    <div class="list-of-stock">
+      <form>
+      @foreach(var stock in Model)
+      {
+        <button asp-controller="Stock" asp-action="Explore" asp-route-stockSymbol="@stock.StockSymbol" class="stock">
+          <h2>@stock.StockName</h2>
+          <h3 style="color:#9e9fa5;">(@stock.StockSymbol)</h3>
+        </button>
+      }
+      </form>
+    </div>
+  </div>
+  <div class="chosen-stock">
+    @if(ViewBag.CurrentStockInfo != null)
+    {
+      @await Component.InvokeAsync("Stock", new {CurrentStock = ViewBag.CurrentStockInfo})
+    }
+  </div>
+</div>

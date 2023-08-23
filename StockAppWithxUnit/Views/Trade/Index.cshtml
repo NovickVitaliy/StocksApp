@@ -1,0 +1,73 @@
+﻿@model StockTrade
+@inject IConfiguration Configuration
+
+<h3>Stocks > @Model.StockName</h3>
+<div class="stock-section">
+  <div class="stock-info">
+    <h1>@Model.StockName (<span class="stock-symbol">@Model.StockSymbol</span>)</h1>
+    <h2> <span style="color: #9E9FA5;">$</span> <span class="price">@Model.Price</span></h2>
+  </div>
+  <div class="order-section">
+    <h3>New order</h3>
+    <h4>Quantity:</h4>
+    <form method="post">
+      <input class="quantity-selector" type="number" name="Quantity" value="@Model.Quantity" />
+      <input type="hidden" name="StockSymbol" value="@Model.StockSymbol" />
+      <input type="hidden" name="StockName" value="@Model.StockName" />
+      <input type="hidden" name="DateAndTimeOfOrder" value="@DateTime.Now" />
+      <input type="hidden" name="Price" value="@Model.Price"/>
+      <div class="sell-buy-button">
+        <button class="sell-button" formaction="~/Trade/SellOrder">
+          <i class="fa-solid fa-arrow-down" style="color: #fafafa;"></i>
+          <h3>Sell</h3>
+        </button>
+        <button class="buy-button" type="submit" formaction="~/Trade/BuyOrder">
+          <i class="fa-solid fa-arrow-up" style="color: #fafafa;"></i>
+          <h3>Buy</h3>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+
+  const token = 'cj5pj79r01qpipiafefgcj5pj79r01qpipiafeg0';
+  const stockSymbol = document.querySelector('.stock-symbol').innerHTML;
+  let socket = new WebSocket(`wss://ws.finnhub.io?token=${token}`);
+
+  const priceSpan = document.querySelector('.price');
+
+  socket.addEventListener('open', (event) => {
+      socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': stockSymbol }));
+  });
+
+  socket.addEventListener('message', (event) => {
+      if (event.data.type === "error") {
+          priceSpan.innerHTML = "error";
+      }
+
+      var eventData = JSON.parse(event.data);
+
+      if (eventData) {
+          if (eventData.data) {
+              var updatedPrice = JSON.parse(event.data).data[0].p;
+              var timeStamp = JSON.parse(event.data).data[0].t;
+
+              priceSpan.innerHTML = updatedPrice;
+          }
+      }
+  });
+
+  var unsubscribe = function (stockSymbol) {
+      socket.send(JSON.stringify({
+          'type': 'unsubscribe',
+          'symbol': stockSymbol
+      }));
+  }
+
+  window.onunload = function () {
+      unsubscribe(stockSymbol);
+  }
+
+</script>

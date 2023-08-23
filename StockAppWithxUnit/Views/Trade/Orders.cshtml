@@ -1,0 +1,34 @@
+﻿@model Orders
+
+
+<div style="display: flex; justify-content: space-between;">
+  <h3>Stocks > Orders</h3>
+  <a asp-controller="Trade" asp-action="OrdersPDF">Download as PDF</a>
+</div>
+<div class="main-section">
+  <div class="buy-orders-section">
+    <h3 class="order-header">Buy Orders</h3>
+    @foreach (var buyOrder in Model.BuyOrders)
+    {
+      <div class="buy-order-box">
+        <h2>@buyOrder.StockName (@buyOrder.StockSymbol)</h2>
+        <p> <span class="bold-text">@buyOrder.Quantity</span>  shares at <span class="bold-text">$@buyOrder.Price</span></p>
+        <p>Trade Amount: <span class="bold-text">$@buyOrder.TradeAmount</span></p>
+        <p>@buyOrder.DateAndTimeOfOrder</p>
+      </div>
+    }
+
+  </div>
+  <div class="sell-orders-section">
+    <h3 class="order-header">Sell Orders</h3>
+    @foreach (var sellOrder in Model.SellOrders)
+    {
+      <div class="sell-order-box">
+        <h2>@sellOrder.StockName (@sellOrder.StockSymbol)</h2>
+        <p> <span class="bold-text">@sellOrder.Quantity</span>  shares at <span class="bold-text">$@sellOrder.Price</span> </p>
+        <p>Trade Amount: <span class="bold-text">$@sellOrder.TradeAmount</span></p>
+        <p>@sellOrder.DateAndTimeOfOrder</p>
+      </div>
+    }
+  </div>
+</div>

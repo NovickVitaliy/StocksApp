@@ -1,0 +1,17 @@
+﻿@model Dictionary<string, object>
+
+<form>
+  <div style="padding-left:10px; margin-left:10px;">
+    <img src="@Model["logo"]" style="width:100%;" />
+    <h1>@Model["name"] (@Model["ticker"])</h1>
+    <div style="padding:3px; background-color:#9da1a8; border-radius:5px;">
+      <h4>@Model["finnhubIndustry"]</h4>
+    </div>
+    <h3>Exchange:<span style="background-color:#9da1a8; border-radius:5px;padding:3px;">@Model["exchange"]</span> </h3>
+    <h1><span style="color:#9da1a8;">$</span>@Model["price"]</h1>
+    <button style="background-color:#216eeb; border-radius:5px; padding:10px; font-size:16px;" asp-controller="Trade" asp-action="Index" asp-route-stockSymbol="@Model["ticker"]">
+      Trade now
+    </button>
+  </div>
+</form>
+

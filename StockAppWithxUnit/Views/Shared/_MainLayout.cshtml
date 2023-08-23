@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width" />
+  <title>@ViewBag.Title</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="~/StyleSheet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Lexend:wght@200&family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <i class="fa-solid fa-money-bill-trend-up"></i>
+      <h1>Stocks</h1>
+    </div>
+    <div class="search-setting-login-buttons">
+      <input class="search-input" type="text" placeholder="Search Stocks" />
+      <a href="~/trade/settings"><i class="fa-solid fa-gear" style="color: #000000;"></i></a>
+      <button class="search-button" type="submit">Login</button>
+    </div>
+  </div>
+  <div class="pages">
+    <ul class="page-list">
+      @if (ViewBag.CurrentUrl == "~/Trade/Explore")
+      {
+        <li class="page-item active"><a href="~/Stock/Explore">Explore</a></li>
+      }
+      else
+      {
+        <li class="page-item"><a href="~/Stock/Explore">Explore</a></li>
+      }
+      @if (ViewBag.CurrentUrl == "~/Trade/Index")
+      {
+        <li class="page-item active"><a href="~/Trade/Index">Trade</a></li>
+
+      }
+      else
+      {
+        <li class="page-item"><a href="~/Trade/Index">Trade</a></li>
+      }
+
+      @if (ViewBag.CurrentUrl == "~/Trade/Orders")
+      {
+        <li class="page-item active"><a href="~/Trade/Orders">Orders</a></li>
+      }
+      else
+      {
+        <li class="page-item"><a href="~/Trade/Orders">Orders</a></li>
+      }
+    </ul>
+  </div>
+  <div>
+    @RenderBody()
+  </div>
+</body>
+</html>
